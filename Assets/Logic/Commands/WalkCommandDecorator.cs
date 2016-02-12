@@ -9,8 +9,7 @@ public static class WalkCommandDecorator
 	{
 		return new CanWalkDecorator (unit,canWalkProvider);
 	}
-
-
+		
 	class CanWalkDecorator: IGameUnit
 	{
 		IGameUnit m_decoratee;

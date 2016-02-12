@@ -7,6 +7,7 @@ public class GameUnit: IGameUnit
 
 	GameUnit ()
 	{
+		
 	}
 
 	public static IGameUnit Basic()
@@ -23,21 +24,5 @@ public class GameUnit: IGameUnit
 	}
 
 	#endregion
-
-	class EmptyCommands: ICommands
-	{
-		#region ICommands implementation
-		public int Count {
-			get {
-				return 0;
-			}
-		}
-		#endregion
-
-		public void Visit (ICommandsVisitior visitor)
-		{
-			
-		}
-	}
 }
 

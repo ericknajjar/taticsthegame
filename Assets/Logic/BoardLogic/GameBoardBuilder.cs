@@ -10,7 +10,14 @@ class EmptySelection: ISelection
 			return true;
 		}
 	}
+
+	public ICommands Commands {
+		get {
+			return new EmptyCommands ();
+		}
+	}
 	#endregion
+
 }
 
 //TODO: Builder 
@@ -52,6 +59,11 @@ public class GameBoardBuilder
 		public void AddSelectable(Point p,ISelectable selectable)
 		{
 			m_selectables.Add (p, selectable);
+		}
+
+		public bool IsEmpty (Point p)
+		{
+			return !m_selectables.ContainsKey (p);
 		}
 	}
 }

@@ -18,6 +18,27 @@ public class BoardTests
 	}
 
 	[Test]
+	public void EmptyPoint()
+	{
+		var builder = new GameBoardBuilder ();
+		var board = builder.GetBoard ();
+
+		Assert.That (board.IsEmpty(Point.Make(1, 1)));
+	}
+
+	[Test]
+	public void NonEmptyPoint()
+	{
+		var builder = new GameBoardBuilder ();
+		var board = builder.GetBoard ();
+
+		var moq = new Mock<ISelectable> ();
+		builder.AddSelectable (Point.Make(1, 1), moq.Object);
+
+		Assert.That (!board.IsEmpty(Point.Make(1, 1)));
+	}
+
+	[Test]
 	public void NonEmptySelection()
 	{
 		var builder = new GameBoardBuilder ();

@@ -7,7 +7,6 @@ using Moq;
 [TestFixture]
 public class GameUnitTests
 {
-	
 	[Test]
 	public void EmptyCommands()
 	{
