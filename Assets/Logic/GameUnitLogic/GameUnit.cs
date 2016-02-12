@@ -33,6 +33,11 @@ public class GameUnit: IGameUnit
 			}
 		}
 		#endregion
+
+		public void Visit (ICommandsVisitior visitor)
+		{
+			
+		}
 	}
 }
 

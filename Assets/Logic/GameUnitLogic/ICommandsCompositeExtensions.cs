@@ -1,6 +1,6 @@
 ﻿using System;
 
-
+//TODO: Composite Visitor
 public static class ICommandsCompositeExtensions
 {
 	public static ICommands Merge(this ICommands a, ICommands b)
@@ -19,15 +19,17 @@ public static class ICommandsCompositeExtensions
 			m_b = b;
 		}
 
-		#region ICommands implementation
-
 		public int Count {
 			get {
 				return m_a.Count+m_b.Count;
 			}
 		}
-
-		#endregion
+			
+		public void Visit (ICommandsVisitior visitor)
+		{
+			m_a.Visit (visitor);
+			m_b.Visit (visitor);
+		}
 	}
 }
 
