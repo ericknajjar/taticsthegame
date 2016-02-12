@@ -12,7 +12,7 @@ public class GameUnitTests
 	{
 		var unit = GameUnit.Basic();
 
-		ICommands commands = unit.Commands;
+		IUnitCapabilities commands = unit.Capabilities;
 
 		Assert.AreEqual (0,commands.Count);
 	}
@@ -27,7 +27,7 @@ public class GameUnitTests
 			
 		var unit = GameUnit.Basic().CanWalk(moq.Object);
 
-		ICommands commands = unit.Commands;
+		IUnitCapabilities commands = unit.Capabilities;
 
 		Assert.AreEqual (1,commands.Count);
 	}
@@ -45,19 +45,13 @@ public class GameUnitTests
 
 		var unit = GameUnit.Basic().CanWalk(moq.Object);
 
-		ICommands commands = unit.Commands;
+		IUnitCapabilities commands = unit.Capabilities;
 
-		var moqVisitor = new Mock<ICommandsVisitior> ();
+		var moqVisitor = new Mock<IUnitCapabilityVisitor> ();
 
-		bool availablePointsOk = false;
-
-		moqVisitor.Setup((x) => x.PickSinglePointCommand(It.IsAny<IPickSinglePointCommand>())).Callback<IPickSinglePointCommand>((cmd)=>{
-			availablePointsOk = cmd.AvailablePoints.Contains(pointZero);
-			
-		});
-
+	
 		commands.Visit (moqVisitor.Object);
+		moqVisitor.Verify((x) =>  x.WalkCapability(It.IsAny<IWalkCapability>()),Times.Once());
 
-		Assert.That (availablePointsOk);
 	}
 }

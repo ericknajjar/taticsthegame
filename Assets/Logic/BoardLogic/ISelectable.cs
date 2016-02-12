@@ -3,7 +3,7 @@
 
 public interface ISelectable
 {
-	ISelection Select();
+	ISelection Select(Point p,IBoardCommandFactory factory);
 }
 
 

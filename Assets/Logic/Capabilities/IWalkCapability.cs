@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 
 
-public interface IPickSinglePointCommand
+public interface IWalkCapability
 {
-	void Pick (int pointIndex);
 	IList<Point> AvailablePoints{ get;}
 }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-class EmptyCommands: ICommands
+class EmptyUnitCapabilities: IUnitCapabilities
 {
 	#region ICommands implementation
 	public int Count {
@@ -10,7 +10,7 @@ class EmptyCommands: ICommands
 	}
 	#endregion
 
-	public void Visit (ICommandsVisitior visitor)
+	public void Visit (IUnitCapabilityVisitor visitor)
 	{
 
 	}

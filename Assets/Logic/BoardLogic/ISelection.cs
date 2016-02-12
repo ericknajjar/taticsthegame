@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public interface ISelection
 {
 	bool IsEmpty{ get;}
-	ICommands Commands{ get;}
+	IBoardCommands Commands{ get;}
 }
 
 

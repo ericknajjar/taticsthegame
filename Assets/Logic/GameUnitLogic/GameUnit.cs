@@ -3,9 +3,9 @@
 
 public class GameUnit: IGameUnit
 {
-	static ICommands m_emptyCommands = new EmptyCommands();
+	static IUnitCapabilities m_emptyCommands = new EmptyUnitCapabilities();
 
-	GameUnit ()
+	private GameUnit ()
 	{
 		
 	}
@@ -17,7 +17,7 @@ public class GameUnit: IGameUnit
 
 	#region IGameUnity implementation
 
-	public ICommands Commands {
+	public IUnitCapabilities Capabilities {
 		get {
 			return m_emptyCommands;
 		}

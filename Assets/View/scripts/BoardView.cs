@@ -57,6 +57,11 @@ public class BoardView : MonoBehaviour
 		}
 	}
 
+	public void AddUnitView(int x, int y)
+	{
+
+	}
+
 	void Update()
 	{
 		if (Input.GetMouseButtonDown (0)) 

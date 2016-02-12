@@ -3,7 +3,8 @@
 
 public interface IGameUnit
 {
-	ICommands Commands{ get;}
+	IUnitCapabilities Capabilities{ get;}
+
 }
 
 

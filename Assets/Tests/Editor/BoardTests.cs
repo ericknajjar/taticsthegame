@@ -47,7 +47,8 @@ public class BoardTests
 		var moqSelection = new Mock<ISelection> ();
 
 		moqSelection.SetupGet ((x) => x.IsEmpty).Returns (false);
-		moq.Setup ((x) => x.Select ()).Returns (moqSelection.Object);
+
+		moq.Setup ((x) => x.Select (It.IsAny<Point>(), It.IsAny<IBoardCommandFactory>())).Returns (moqSelection.Object);
 
 		builder.AddSelectable (Point.Make(1, 1), moq.Object);
 			
@@ -67,7 +68,7 @@ public class BoardTests
 
 		moqSelection.SetupGet ((x) => x.IsEmpty).Returns (false);
 		var ret = moqSelection.Object;
-		moq.Setup ((x) => x.Select ()).Returns (ret);
+		moq.Setup ((x) => x.Select (It.IsAny<Point>(), It.IsAny<IBoardCommandFactory>())).Returns (ret);
 
 		builder.AddSelectable (Point.Make(1, 1), moq.Object);
 
