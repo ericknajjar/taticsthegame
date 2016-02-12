@@ -3,7 +3,8 @@ using System.Collections;
 using u3dExtensions.IOC;
 using u3dExtensions.Engine.Runtime;
 
-public class Bootstrap : MonoBehaviour {
+public class Bootstrap : MonoBehaviour 
+{
 
 	IBindingContext m_masterContext;
 
@@ -14,5 +15,8 @@ public class Bootstrap : MonoBehaviour {
 		var bindingFinder = new ReflectiveBindingFinder (GetType ().Assembly);
 
 		m_masterContext = new ReflectiveBindingContextFactory (bindingFinder).CreateContext();
+
+		m_masterContext.Get<Game> ();
+
 	}
 }
