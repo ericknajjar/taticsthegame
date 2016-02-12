@@ -4,6 +4,7 @@ using u3dExtensions;
 using UnityEngine;
 using u3dExtensions.IOC;
 using u3dExtensions.IOC.extensions;
+using u3dExtensions.Events;
 
 public class Game: MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class Game: MonoBehaviour
 	public Game(BoardView boardView)
 	{
 		m_boardView = boardView;
+
+		m_boardView.OnCellClicked.Register ((x, y) => {
+
+		
+		});
 	}
 
 	[BindingProvider(DependencyCount = 1)]

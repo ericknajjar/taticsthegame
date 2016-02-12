@@ -1,73 +1,60 @@
 ﻿using System.Collections;
 using NUnit.Framework;
 using System;
-
+using Moq;
 
 [TestFixture]
 public class BoardTests 
 {
 	[Test]
-	public void EmptySelectionCantWalk()
+	public void EmptySelection()
 	{
-		var board = new Board (10,10);
+		var builder = new GameBoardBuilder ();
+		var board = builder.GetBoard ();
 
-		board.Select (1, 1);
+		var selection = board.Select (Point.Make(1, 1));
 
-		Assert.Throws<Exception>(()=>board.Walk (2,2) );
+		Assert.That (selection.IsEmpty);
 	}
 
 	[Test]
-	public void NewPositionNotEmptyAfterUnityWalk()
+	public void NonEmptySelection()
 	{
-		var board = new Board (10,10);
+		var builder = new GameBoardBuilder ();
 
-		board.AddUnity (1, 1);
-		board.Select (1, 1);
-		board.Walk (2,2);
+		var moq = new Mock<ISelectable> ();
+		var moqSelection = new Mock<ISelection> ();
 
-		Assert.That(board.HasUnity (2, 2));
+		moqSelection.SetupGet ((x) => x.IsEmpty).Returns (false);
+		moq.Setup ((x) => x.Select ()).Returns (moqSelection.Object);
+
+		builder.AddSelectable (Point.Make(1, 1), moq.Object);
+			
+		var board = builder.GetBoard();
+		var selection = board.Select (Point.Make(1, 1));
+
+		Assert.That(!selection.IsEmpty);
 	}
 
 	[Test]
-	public void UpdatedSelectedAfterWalk()
+	public void SameSelectionObject()
 	{
-		var board = new Board (10,10);
+		var builder = new GameBoardBuilder ();
 
-		board.AddUnity (1, 1);
-		board.Select (1, 1);
-		board.Walk (2,2);
+		var moq = new Mock<ISelectable> ();
+		var moqSelection = new Mock<ISelection> ();
 
-		Assert.DoesNotThrow(()=> board.Walk (1,1));
+		moqSelection.SetupGet ((x) => x.IsEmpty).Returns (false);
+		var ret = moqSelection.Object;
+		moq.Setup ((x) => x.Select ()).Returns (ret);
+
+		builder.AddSelectable (Point.Make(1, 1), moq.Object);
+
+		var board = builder.GetBoard();
+		var selection = board.Select (Point.Make(1, 1));
+
+		Assert.AreEqual(ret,selection);
 	}
 
-	[Test]
-	public void AddUnityMakesUnityExist()
-	{
-		var board = new Board (10,10);
-
-		board.AddUnity (1, 1);
-
-		Assert.That(board.HasUnity (1, 1));
-	}
-
-	[Test]
-	public void CantWalkIntoOcupiedCell()
-	{
-		var board = new Board (10,10);
-
-		board.AddUnity (1, 1);
-		board.AddUnity (2, 2);
-		board.Select (1, 1);
-
-		Assert.Throws<Exception>(()=> board.Walk (2, 2));
-	}
-
-	[Test]
-	public void EmptyCellDontHaveUnity()
-	{
-		var board = new Board (10,10);
-
-		Assert.That(!board.HasUnity (1, 1));
-	}
 
 }
