@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public interface IWalkCapability
 {
-	IList<Point> AvailablePoints{ get;}
+	int Width{get;}
+	int Height{get;}
 }
 
 

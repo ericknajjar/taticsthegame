@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public interface IBoardCommandFactory
 {
-	IBoardCommand BuildWalkCommand(Point from,IList<Point> posibilities);
+	IBoardCommand BuildWalkCommand(Point from,int width, int height);
 }
 
 

@@ -8,50 +8,36 @@ using Moq;
 public class GameUnitTests
 {
 	[Test]
-	public void EmptyCommands()
+	public void EmptyCapabilities()
 	{
 		var unit = GameUnit.Basic();
 
-		IUnitCapabilities commands = unit.Capabilities;
+		IUnitCapabilities capabilities = unit.Capabilities;
 
-		Assert.AreEqual (0,commands.Count);
+		Assert.AreEqual (0,capabilities.Count);
 	}
 
 	[Test]
-	public void WalkCommandNotEmpty()
-	{
-		var points = new List<Point> ();
-		var moq = new Mock<ICanWalkPointProvider> ();
+	public void WalkCapabilitiesNotEmpty()
+	{	
+		var unit = GameUnit.Basic().CanWalk(10,10);
 
-		moq.Setup ((x) => x.GetEnumerator()).Returns (()=> points.GetEnumerator ());
-			
-		var unit = GameUnit.Basic().CanWalk(moq.Object);
+		IUnitCapabilities capabilities = unit.Capabilities;
 
-		IUnitCapabilities commands = unit.Capabilities;
-
-		Assert.AreEqual (1,commands.Count);
+		Assert.AreEqual (1,capabilities.Count);
 	}
 
 	[Test]
-	public void WalkCommandWithDestinations()
+	public void WalkCapabilityVisited()
 	{
-		var points = new List<Point> ();
-		var pointZero = Point.Make (0, 0);
-		points.Add (pointZero);
+	
+		var unit = GameUnit.Basic().CanWalk(10,10);
 
-		var moq = new Mock<ICanWalkPointProvider> ();
-
-		moq.Setup ((x) => x.GetEnumerator()).Returns (()=> points.GetEnumerator ());
-
-		var unit = GameUnit.Basic().CanWalk(moq.Object);
-
-		IUnitCapabilities commands = unit.Capabilities;
+		IUnitCapabilities capabilities = unit.Capabilities;
 
 		var moqVisitor = new Mock<IUnitCapabilityVisitor> ();
-
 	
-		commands.Visit (moqVisitor.Object);
+		capabilities.Visit (moqVisitor.Object);
 		moqVisitor.Verify((x) =>  x.WalkCapability(It.IsAny<IWalkCapability>()),Times.Once());
-
 	}
 }

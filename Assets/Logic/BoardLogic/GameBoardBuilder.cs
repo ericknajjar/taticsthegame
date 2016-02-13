@@ -69,9 +69,9 @@ public class GameBoardBuilder
 
 		#region IBoardCommandFactory implementation
 
-		public IBoardCommand BuildWalkCommand (Point from, IList<Point> posibilities)
+		public IBoardCommand BuildWalkCommand (Point from, int width, int height)
 		{
-			return new WalkCommand (from,posibilities, this);
+			return new WalkCommand (from, width,height,this);
 		}
 
 		#endregion
@@ -82,12 +82,34 @@ public class GameBoardBuilder
 			IList<Point> m_posibilities;
 			Board m_parent;
 
-			public WalkCommand(Point from, IList<Point> posibilities, Board parent)
+			public WalkCommand(Point from,int width, int height,Board parent)
 			{
-				m_posibilities = posibilities;
 				m_from = from;
 				m_parent = parent;
+
+				m_posibilities = CalculatePosibilities(width,height);
 			}
+
+			List<Point> CalculatePosibilities(int w,int h)
+			{
+				List<Point> validPoints = new List<Point> (w * h);
+
+				for(int x=0;x<w;++x)
+				{
+					for(int y=0;y<h;++y)
+					{
+						var point = Point.Make (x,y);
+
+						if (m_parent.IsEmpty (point)) 
+						{
+							validPoints.Add (point);
+						}
+					}
+				}
+
+				return validPoints;
+			}
+
 
 			#region IBoardCommand implementation
 
@@ -103,8 +125,7 @@ public class GameBoardBuilder
 			}
 			#endregion
 
-
-			public void Exec(int index)
+			public ICommandResult Exec(int index)
 			{
 				var point = m_posibilities [index];
 
@@ -114,8 +135,10 @@ public class GameBoardBuilder
 				{
 					m_parent.m_selectables.Remove (m_from);
 					m_parent.m_selectables.Add (point, selectable);
+					return new AUnitMoved (m_from, point);
 				}
 
+				return new EmptyResult ();
 			}
 
 		}

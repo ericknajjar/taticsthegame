@@ -7,7 +7,7 @@ using u3dExtensions.IOC.extensions;
 using u3dExtensions.Events;
 
 //TODO: Mediator
-public class Game: MonoBehaviour
+public class Game
 {
 	BoardView m_boardView;
 
@@ -25,9 +25,11 @@ public class Game: MonoBehaviour
 
 		m_currentSelection = m_logicBoard.Select (Point.Make(-1,-1));
 
-	/*	m_boardView.OnCellClicked.Register((x,y) =>{
+		m_boardView.OnCellClicked.Register((x,y) =>{
 
+			//TODO: Usar state pattern
 			var point = Point.Make(x,y);
+			Debug.Log(point);
 
 			if(m_currentSelection.IsEmpty)
 			{
@@ -36,34 +38,57 @@ public class Game: MonoBehaviour
 			}
 			else
 			{
-				m_currentSelection.Commands.Visit(new WalkVisitor(point));
+				var visitor = new WalkVisitor(point);
+
+				m_currentSelection.Commands.Visit(visitor);
+
+				m_boardView.AddResult(visitor.Result);
 				m_currentSelection = m_logicBoard.Select (Point.Make(-1,-1));
 			}
-		});*/
+		});
 
 	}
 
 	void AddGameUnity(GameBoardBuilder builder, Point p)
 	{
-		var pointProvider = new BoardCanWalkPointProviderAdapter (builder, 10, 10);
+		var unit = GameUnit.Basic ().CanWalk (10,10);
+		var selectable = new GameUnitSelectableAdapter (unit);
 
-		var unit = GameUnit.Basic ().CanWalk (pointProvider);
-		//var selectable = new GameUnitySelectableAdapter (unit);
 
-		//m_boardView.AddUnitView (p.X, p.Y);
-
-		//builder.AddSelectable (p,selectable);
+		m_boardView.AddUnitView (p);
+	
+		builder.AddSelectable (p,selectable);
 	}
 
 	[BindingProvider(DependencyCount = 1)]
 	public static Game NewGame(IBindingContext context)
 	{
-		var boardView = context.Get<BoardView> (InnerBindingNames.Empty,10,10);
+		WorldLogicCoordinateTransform transformer = new WorldLogicCoordinateTransform(0.32f,10,10);
+		var boardView = context.Get<BoardView> (InnerBindingNames.Empty,10,10,transformer);
 
 		return new Game(boardView);
 	}
 
+	class WalkVisitor: BoardCommandsVisitorAdapter
+	{
+		Point m_target;
+		public ICommandResult Result{ get; private set;}
 
+		public WalkVisitor(Point target)
+		{
+			m_target = target;
+			Result = new EmptyResult();
+		}
+
+		public override void WalkCommand (IBoardWalkCommand command)
+		{
+			var index = command.PossiblePoints.IndexOf (m_target);
+
+			if(index >= 0)
+				Result = command.Exec (index);
+		}
+	}
+		
 
 }
 

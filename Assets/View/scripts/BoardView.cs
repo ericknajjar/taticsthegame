@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using u3dExtensions.Engine.Runtime;
 using u3dExtensions.Events;
 
@@ -8,13 +9,18 @@ public class BoardView : MonoBehaviour
 	[SerializeField]
 	CellView m_cellViewPrfab = null;
 
-	//[SerializeField]
-	float m_scaleRation = 0.32f;
+	[SerializeField]
+	GameObject m_unitPrefab = null;
 
 	CellView  [,]m_viewBoard;
 
+	Dictionary<Point,GameObject> m_units = new Dictionary<Point, GameObject> ();
+
 	EventSlot<int,int> m_onCellClicked = new EventSlot<int, int>();
-	Vector2 m_offset = Vector2.zero;
+
+	bool m_lockInput = false;
+
+	WorldLogicCoordinateTransform m_transformer;
 
 	public IEventRegister<int, int> OnCellClicked
 	{
@@ -23,16 +29,15 @@ public class BoardView : MonoBehaviour
 		}
 	}
 
-
 	[BindingProvider]
-	public static BoardView CreateBoardView(int width, int height)
+	public static BoardView CreateBoardView(int width, int height,WorldLogicCoordinateTransform transformer)
 	{
 		var prefab = Resources.Load<GameObject> ("BoardView");
 
 		var go = (GameObject)GameObject.Instantiate (prefab);
 
 		var ret = go.GetComponent<BoardView> ();
-
+		ret.m_transformer = transformer;
 		ret.Init (width,height);
 
 		return ret;
@@ -42,34 +47,76 @@ public class BoardView : MonoBehaviour
 	{
 		m_viewBoard = new CellView[width, height];
 
-		m_offset = new Vector2 (-width / 2.0f, -height / 2.0f)*m_scaleRation;
-
 		for (int x = 0; x < width; ++x) 
 		{
 			for(int y = 0; y < height; ++y)
 			{
+				var point = Point.Make (x,y);
 
-				var pos = (new Vector2 (x, y) * m_scaleRation)+m_offset;
+				var pos = m_transformer.PointToWorld (point);
+
 				var go = (GameObject)GameObject.Instantiate (m_cellViewPrfab.gameObject,pos,Quaternion.identity);
 				m_viewBoard [x, y] = go.GetComponent<CellView> ();
 
 			}
 		}
 	}
-
-	public void AddUnitView(int x, int y)
+		
+	public void AddUnitView(Point p)
 	{
+		var pos = m_transformer.PointToWorld (p);
+		var go = (GameObject)GameObject.Instantiate (m_unitPrefab,pos,Quaternion.identity);
+		m_units.Add (p, go);
+	}
 
+	public void AddResult(ICommandResult result)
+	{
+		//TODO: Botar um visitor?
+		var unitMoves = result as AUnitMoved;
+
+		if (unitMoves != null) 
+		{
+			m_lockInput = true;
+			StartCoroutine (MoveUnit (unitMoves.From,unitMoves.To));
+		}
+	}
+
+	IEnumerator MoveUnit(Point from,Point to)
+	{
+		GameObject target = null;
+		if(m_units.TryGetValue(from,out target))
+		{
+			m_units.Remove (from);
+			m_units.Add (to, target);
+			var worldPos = m_transformer.PointToWorld (to);
+
+			for(;;)
+			{
+				target.transform.position = Vector3.Lerp (target.transform.position, worldPos, Time.deltaTime);
+
+				if (Vector2.Distance (target.transform.position,worldPos) <= 0.01f) 
+				{
+					target.transform.position = worldPos;
+					break;
+				}
+
+				yield return null;
+			}
+
+		}
+
+		m_lockInput = false;
 	}
 
 	void Update()
 	{
-		if (Input.GetMouseButtonDown (0)) 
+		if (Input.GetMouseButtonDown (0) && !m_lockInput) 
 		{
-			Vector2 worldPos = ((Vector2)Camera.main.ScreenToWorldPoint (Input.mousePosition))-m_offset;
-
-			int x = (int)(worldPos.x / 0.32f);
-			int y = (int)(worldPos.y / 0.32f);
+			
+			Vector2 worldPos = ((Vector2)Camera.main.ScreenToWorldPoint (Input.mousePosition));
+			var point  = m_transformer.WorldToPoint (worldPos);
+			int x = point.X;
+			int y = point.Y;
 
 			bool isXValid = x >= 0 && x < m_viewBoard.GetLength (0);
 			bool isYValid = y >= 0 && y < m_viewBoard.GetLength (1);

@@ -5,29 +5,29 @@ using System.Collections.Generic;
 
 public static class WalkCapabilityDecorator
 {
-	public static IGameUnit CanWalk(this IGameUnit unit, ICanWalkPointProvider canWalkProvider)
+	public static IGameUnit CanWalk(this IGameUnit unit, int width, int height)
 	{
-		return new CanWalkDecorator (unit,canWalkProvider);
+		return new CanWalkDecorator (unit,width,height);
 	}
 		
 	class CanWalkDecorator: IGameUnit
 	{
 		IGameUnit m_decoratee;
-		ICanWalkPointProvider m_canWalkProvider;
+		int m_width;
+		int m_height;
 
-		public CanWalkDecorator(IGameUnit unit, ICanWalkPointProvider canWalkProvider)
+		public CanWalkDecorator(IGameUnit unit,int width, int height)
 		{
 			m_decoratee = unit;
-			m_canWalkProvider = canWalkProvider;
+			m_width = width;
+			m_height = height;
 		}
 
 		#region IGameUnit implementation
 
 		public IUnitCapabilities Capabilities {
 			get {
-
-				var possibleDestinations = new List<Point> (m_canWalkProvider);
-				var command = new WalkCapability (m_decoratee, possibleDestinations);
+				var command = new WalkCapability (m_width,m_height);
 				return m_decoratee.Capabilities.Merge (command);
 			}
 		}
@@ -36,35 +36,34 @@ public static class WalkCapabilityDecorator
 
 		class WalkCapability: IUnitCapabilities, IWalkCapability
 		{
-			IList<Point> m_posibleDestinations;
-
-			public WalkCapability(IGameUnit unit, IList<Point> posibleDestinations)
+			
+			public WalkCapability(int width, int height)
 			{
-				m_posibleDestinations = posibleDestinations;
+				Width = width;
+				Height = height;
 			}
 
-			#region IPickSinglePointCommand implementation
-			public void Visit (IUnitCapabilityVisitor visitor)
-			{
-				visitor.WalkCapability (this);
+			public int Width {
+				get;
+				private set;
 			}
 
-			public IList<Point> AvailablePoints {
-				get {
-					return new List<Point>(m_posibleDestinations);
-				}
+			public int Height {
+				get;
+				private set;
 			}
-			#endregion
-
-			#region ICommands implementation
 
 			public int Count {
 				get {
 					return 1;
 				}
+			}				
+		
+			public void Visit (IUnitCapabilityVisitor visitor)
+			{
+				visitor.WalkCapability (this);
 			}
 
-			#endregion
 
 		}
 	}

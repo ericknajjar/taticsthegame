@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public interface IBoardWalkCommand: IBoardCommand
 {
 	IList<Point> PossiblePoints{ get;}
-	void Exec(int index);
+	ICommandResult Exec(int index);
 }
 
 

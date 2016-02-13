@@ -32,7 +32,7 @@ public class GameUnitSelectableAdapter: ISelectable
 
 		public void WalkCapability (IWalkCapability capability)
 		{
-			var command = m_factory.BuildWalkCommand (m_origin, capability.AvailablePoints);
+			var command = m_factory.BuildWalkCommand (m_origin,capability.Width,capability.Height);
 			Commands.Add (command);
 		}			
 
