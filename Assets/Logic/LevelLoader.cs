@@ -5,6 +5,7 @@ using u3dExtensions;
 public class LevelLoader : MonoBehaviour {
 
 	IPromise<string> m_finishLoad;
+
 	IEnumerator Start()
 	{
 		yield return null;

@@ -11,7 +11,6 @@ class EmptySelection: ISelection
 		}
 	}
 		
-
 	public IBoardCommands Commands {
 		get {
 			return BoardCommands.FromList(new List<IBoardCommand> ());

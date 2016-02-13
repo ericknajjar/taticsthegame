@@ -8,14 +8,10 @@ public interface IBoardCommandsVisitor
 
 public class BoardCommandsVisitorAdapter: IBoardCommandsVisitor
 {
-	#region IBoardCommandVisitor implementation
-
 	public virtual void WalkCommand (IBoardWalkCommand command)
 	{
 		
 	}
-
-	#endregion
-
+		
 }
 

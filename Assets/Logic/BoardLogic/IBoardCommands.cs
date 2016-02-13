@@ -23,8 +23,6 @@ public static class BoardCommands
 		{
 			m_commands = commands;
 		}
-		
-		#region IBoardCommands implementation
 
 		public void Visit (IBoardCommandsVisitor vistor)
 		{
@@ -34,8 +32,6 @@ public static class BoardCommands
 			
 			}
 		}
-
-		#endregion
 
 
 	}

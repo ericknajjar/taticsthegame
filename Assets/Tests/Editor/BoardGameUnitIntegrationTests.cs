@@ -7,6 +7,7 @@ public class BoardGameUnitIntegrationTests
 {
 	public BoardGameUnitIntegrationTests ()
 	{
+		
 	}
 
 	[Test]

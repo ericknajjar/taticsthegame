@@ -3,7 +3,7 @@
 
 public class GameUnit: IGameUnit
 {
-	static IUnitCapabilities m_emptyCommands = new EmptyUnitCapabilities();
+	static IUnitCapabilities m_emptyCapabilities = new EmptyUnitCapabilities();
 
 	private GameUnit ()
 	{
@@ -19,7 +19,7 @@ public class GameUnit: IGameUnit
 
 	public IUnitCapabilities Capabilities {
 		get {
-			return m_emptyCommands;
+			return m_emptyCapabilities;
 		}
 	}
 

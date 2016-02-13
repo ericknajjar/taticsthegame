@@ -18,6 +18,7 @@ public class BoardView : MonoBehaviour
 
 	EventSlot<int,int> m_onCellClicked = new EventSlot<int, int>();
 
+	//TODO: Transformar em um state Pattern?
 	bool m_lockInput = false;
 
 	WorldLogicCoordinateTransform m_transformer;

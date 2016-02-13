@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 //TODO: Decorator
-
 public static class WalkCapabilityDecorator
 {
+	//TODO: Introduzir um builder aqui
 	public static IGameUnit CanWalk(this IGameUnit unit, int width, int height)
 	{
 		return new CanWalkDecorator (unit,width,height);

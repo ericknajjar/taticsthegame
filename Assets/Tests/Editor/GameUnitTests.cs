@@ -30,7 +30,6 @@ public class GameUnitTests
 	[Test]
 	public void WalkCapabilityVisited()
 	{
-	
 		var unit = GameUnit.Basic().CanWalk(10,10);
 
 		IUnitCapabilities capabilities = unit.Capabilities;
